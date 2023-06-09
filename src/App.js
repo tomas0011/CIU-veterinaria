@@ -1,19 +1,31 @@
 import './App.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
-import Container from 'react-bootstrap/Container';
-import Row from 'react-bootstrap/Row';
-import Col from 'react-bootstrap/Col';
-import Table from 'react-bootstrap/Table';
-import React, { Fragment, useState } from 'react';
+import React, { Fragment, useEffect, useState } from 'react';
+import { Container, Row, Col } from 'react-bootstrap';
 import Formulario from './components/Formulario';
+import Cliente from './components/Cliente';
 
 const App = () => {
-  const [clientes, setClientes] = useState([]);
+  // Iniciamos nuestro local storage
+  let clientesGuardados = JSON.parse(localStorage.getItem('clientes')) || [];
+
+  // Hook de estado facio con los diferentes clientes de la veterinaria
+  const [clientes, setClientes] = useState(clientesGuardados);
+
+  // Hook de useEffect para manejar la persistencia
+  useEffect(() => {
+    localStorage.setItem('clientes', JSON.stringify(clientes));
+  }, [clientes]);
 
   // Funcion que toma el socio nuevo y lo mete en el array de clientes
   const addCliente = (socio) => {
     setClientes([...clientes, socio]);
+  };
+
+  // Funcion para borrar cliente
+  const deleteCliente = (id) => {
+    setClientes(clientes.filter((cliente) => cliente.id !== id));
   };
 
   return (
@@ -27,24 +39,22 @@ const App = () => {
             <Formulario addCliente={addCliente}/>
           </Col>
           <Col>
-          <Table striped bordered hover>
-            <thead>
-              <tr>
-                <th>ID</th>
-                <th>Nombre</th>
-                <th>DNI</th>
-              </tr>
-            </thead>
-            <tbody>
-              {clientes.map((cliente) => (
-                <tr>
-                  <td>{cliente.id}</td>
-                  <td>{cliente.nombre}</td>
-                  <td>{cliente.dni}</td>
-                </tr>
-              ))}
-            </tbody>
-          </Table>
+            <h3>
+              {
+                clientes.length 
+                  ? 'Listado de clientes'
+                  : 'Aun no hay clientes'
+              }
+            </h3>
+            {
+              clientes.map((cliente) => 
+                <Cliente
+                  cliente={cliente}
+                  deleteCliente={deleteCliente}
+                  key={cliente.id}
+                />
+              )  
+            }
           </Col>
         </Row>
       </Container>

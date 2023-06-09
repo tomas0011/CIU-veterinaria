@@ -1,8 +1,6 @@
 import { v4 as uuid } from 'uuid';
 import React, { Fragment, useState } from 'react';
-import Button from 'react-bootstrap/Button';
-import Form from 'react-bootstrap/Form';
-import Alert from 'react-bootstrap/Alert';
+import { Button, Form, Alert } from 'react-bootstrap';
 
 const Formulario = ({ addCliente }) => {
   // Estado inicial del socio
